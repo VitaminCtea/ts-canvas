@@ -1,0 +1,373 @@
+#picker {
+    display: inline-block;
+    margin-top: 100px;
+    margin-left: 100px;
+    margin-bottom: 50px;
+ }
+
+.color-picker {
+    position: relative;
+    margin: 0;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 8px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    box-shadow: 6px 6px 10px rgba(0, 0, 0, .1);
+}
+
+.color-picker .color-picker__top {
+    display: flex;
+    margin: 0;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.color-picker .color-picker__bottom {
+    margin-top: 6px;
+}
+
+.color-picker .color-picker__bottom .preset-color__container {
+    display: flex;
+    align-items: center;
+}
+
+.color-picker .color-picker__bottom .preset-color__container .preset-color__content {
+    display: flex;
+    align-items: center;
+}
+
+.color-picker .color-picker__bottom .preset-color__container .preset-color__title {
+    line-height: 22px;
+    font-size: 12px;
+    margin-right: 10px;
+    letter-spacing: 1px;
+}
+
+.color-picker .color-picker__bottom .preset-color__container .preset-color__content .color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 50%;
+    transition: transform .2s;
+}
+
+.color-picker .color-picker__bottom .preset-color__container .preset-color__content .color:last-child {
+    margin-right: 0;
+}
+
+.color-picker .color-picker__bottom .preset-color__container .preset-color__content .color:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+.color-picker-right__container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.color-picker .picking-area {
+    position: relative;
+    width: 260px;
+    height: 200px;
+    border: 1px solid #ddd;
+    flex-shrink: 0;
+    margin-right: 6px;
+}
+
+.color-picker .picking-area:hover {
+    cursor: default;
+}
+
+.color-picker .picking-area {
+    background-image: -moz-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+        -moz-linear-gradient(left, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -webkit-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+        -webkit-linear-gradient(left, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -ms-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+        -ms-linear-gradient(left, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+        -o-linear-gradient(left, #fff 0%, rgba(255, 255, 255, 0) 100%);
+
+    background-color: #f00;
+}
+
+.color-picker[data-mode='HSL'] .picking-area {
+    background: -moz-linear-gradient(
+            top,
+            hsl(0, 0%, 100%) 0%,
+            hsla(0, 0%, 100%, 0) 50%,
+            hsla(0, 0%, 0%, 0) 50%,
+            hsl(0, 0%, 0%) 100%
+        ),
+        -moz-linear-gradient(left, hsl(0, 0%, 50%) 0%, hsla(0, 0%, 50%, 0) 100%);
+    background: -webkit-linear-gradient(
+            top,
+            hsl(0, 0%, 100%) 0%,
+            hsla(0, 0%, 100%, 0) 50%,
+            hsla(0, 0%, 0%, 0) 50%,
+            hsl(0, 0%, 0%) 100%
+        ),
+        -webkit-linear-gradient(left, hsl(0, 0%, 50%) 0%, hsla(0, 0%, 50%, 0) 100%);
+    background: -ms-linear-gradient(
+            top,
+            hsl(0, 0%, 100%) 0%,
+            hsla(0, 0%, 100%, 0) 50%,
+            hsla(0, 0%, 0%, 0) 50%,
+            hsl(0, 0%, 0%) 100%
+        ),
+        -ms-linear-gradient(left, hsl(0, 0%, 50%) 0%, hsla(0, 0%, 50%, 0) 100%);
+    background: -o-linear-gradient(
+            top,
+            hsl(0, 0%, 100%) 0%,
+            hsla(0, 0%, 100%, 0) 50%,
+            hsla(0, 0%, 0%, 0) 50%,
+            hsl(0, 0%, 0%) 100%
+        ),
+        -o-linear-gradient(left, hsl(0, 0%, 50%) 0%, hsla(0, 0%, 50%, 0) 100%);
+    background-color: #f00;
+}
+
+.color-picker .picker {
+    position: absolute;
+}
+
+.color-picker .picker::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.5px #fff, inset 0 0 1px 1px rgba(0, 0, 0, .3), 0 0 1px 2px rgba(0, 0, 0, .4);
+}
+
+.color-picker .hue,
+.color-picker .alpha {
+	border: 1px solid #fff;
+}
+
+.color-picker .hue {
+    height: 28px;
+}
+
+.color-picker .alpha {
+    height: 12px;
+    border: 1px solid #ccc;
+    background: url('https://mdn.mozillademos.org/files/5705/alpha.png');
+    margin-bottom: 6px;
+}
+
+.color-picker .alpha-mask {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+
+.color-picker .hue {
+    background: -moz-linear-gradient(
+        left,
+        #f00 0%,
+        #ff0 16.66%,
+        #0f0 33.33%,
+        #0ff 50%,
+        #00f 66.66%,
+        #f0f 83.33%,
+        #f00 100%
+    );
+    background: -webkit-linear-gradient(
+        left,
+        #f00 0%,
+        #ff0 16.66%,
+        #0f0 33.33%,
+        #0ff 50%,
+        #00f 66.66%,
+        #f0f 83.33%,
+        #f00 100%
+    );
+    background: -ms-linear-gradient(
+        left,
+        #f00 0%,
+        #ff0 16.66%,
+        #0f0 33.33%,
+        #0ff 50%,
+        #00f 66.66%,
+        #f0f 83.33%,
+        #f00 100%
+    );
+    background: -o-linear-gradient(
+        left,
+        #f00 0%,
+        #ff0 16.66%,
+        #0f0 33.33%,
+        #0ff 50%,
+        #00f 66.66%,
+        #f0f 83.33%,
+        #f00 100%
+    );
+}
+
+.color-picker .slider {
+    width: 2px;
+    height: 100%;
+    border: 1px solid #777;
+    background-color: #fff;
+    position: relative;
+    top: -1px;
+}
+
+.color-picker-input__container {
+    display: flex;
+}
+
+.color-picker-input__container:last-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.color-picker-input__container .input-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.color-picker-input__container .input-wrapper input {
+    position: relative;
+    width: 40px;
+    text-align: center;
+    font-size: 12px;
+    border: none;
+    outline: none;
+    line-height: 18px;
+    padding: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.color-picker-input__container .input-wrapper:last-child {
+    margin-right: 0;
+}
+
+.color-picker-input__container .input-wrapper .name {
+    font-size: 13px;
+    margin-right: 6px;
+    line-height: 18px;
+}
+
+/* Preview color */
+.color-picker-view__container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.color-picker-view__container .color-picker-input__container .input-wrapper:last-child input {
+    flex: 1;
+}
+
+.color-picker-view__container .color-picker-input__container .input-wrapper:last-child .name {
+    display: none;
+}
+
+.color-picker-view__container .color-picker-input__container .input-wrapper:first-child {
+    margin-right: 0;
+}
+
+.color-picker .preview {
+    width: 95px;
+    height: 53px;
+    border: 1px solid #ddd;
+    background-image: url('https://mdn.mozillademos.org/files/5705/alpha.png');
+    position: relative;
+    margin-right: 10px;
+}
+
+.color-picker .preview-color {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.5);
+    position: absolute;
+    z-index: 1;
+}
+
+.show-color-value__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.show-color-value__container .show-color-left__container {
+    display: flex;
+    height: 100%;
+}
+
+.show-color-value__container .show-color-left__container .show-color__value {
+    height: 20px;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    margin-right: 6px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
+.show-color-value__container .show-color-left__container .show-color__value::selection {
+    background-color: transparent;
+}
+
+.show-color-value__container .show-color-left__container .show-color-select__container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.show-color-value__container .show-color-left__container .show-color-select__container .show-color-select__content {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.show-color-value__container .show-color-left__container .show-color-select__container .show-color-select-title__container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+}
+
+.show-color-value__container .show-color-left__container .show-color__copy {
+    white-space: nowrap;
+}
+
+.show-color-value__container .show-color-left__container .show-color__copy .show-color-copy__format {
+    display: inline-block;
+    line-height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.show-color-value__container .show-color-left__container .show-color__copy .show-color-copy__success  {
+    color: green;
+}
+
+.show-color-value__container .show-color-button__container {
+    font-size: 12px;
+}
+
+.show-color-value__container .show-color-button__container .show-color-button__cancel {
+    color: #606266;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.show-color-value__container .show-color-button__container .show-color-button__confirm {
+    color: #409eff;
+    cursor: pointer;
+}
