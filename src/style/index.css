@@ -1,0 +1,134 @@
+#canvas {
+    background-color: #fff;
+    margin: 10px 15px 20px 25px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, .5);
+}
+
+#treeNode {
+    font-size: 14px;
+}
+
+.treeItem {
+    overflow: hidden;
+    transition: all .5s;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tree-node__content {
+    display: flex;
+    align-items: center;
+    transition: background-color .2s;
+}
+
+.tree-node__content:hover {
+    background-color: #f5f7fa;
+}
+
+.tree-node__expand-icon {
+    position: relative;
+    padding: 10px;
+    cursor: pointer;
+    color: #c0c4cc;
+    font-size: 12px;
+    transform: rotate(0deg);
+    transition: transform .3s ease-in-out;
+}
+
+[class*=" icon-"], [class^=icon-] {
+    font-family: element-icons!important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: baseline;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-caret-right:before {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-left: 6px solid #c0c4cc;
+    border-bottom: 5px solid transparent;
+    transition: transform .5s;
+}
+
+.triangle_0deg {
+    transform: rotate(0);
+}
+
+.triangle_90deg {
+    transform: rotate(90deg);
+}
+
+.is-current {
+    background-color: #f5f7fa;
+}
+
+.color-picker__container {
+    width: 300px;
+    height: 214px;
+    padding: 6px;
+    border: 1px solid #ebeef5;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+    box-sizing: content-box;
+    margin-left: 100px;
+    margin-top: 100px;
+}
+
+.color-picker__content {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+}
+
+.color-picker-bar__container {
+    position: relative;
+    height: 100%;
+}
+
+.color-hue-slider__thumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 4px;
+    background-color: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 1px;
+    box-shadow: 0 0 2px rgba(0,0,0,.6);
+    z-index: 1;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.color-picker-panel__container {
+    position: relative;
+    flex: 0 0 94%;
+    margin-right: 6px;
+    height: 100%;
+}
+
+.color-svpanel__cursor {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    top: 34px;
+    left: 253px;
+    box-shadow: 0 0 0 1.5px #fff, inset 0 0 1px 1px rgba(0,0,0,.3), 0 0 1px 2px rgba(0,0,0,.4);
+    border-radius: 50%;
+    transform: translate(-2px, -2px);
+}
