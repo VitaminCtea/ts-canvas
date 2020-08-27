@@ -62,3 +62,7 @@ export const getElementTotalWidth = (el: HTMLDivElement) => el.clientWidth + (ge
 
 export const updateSliderPosition = (el: HTMLDivElement, pos: number) => 
     el.style.left = Math.max(pos - getElementTotalWidth(el), -2) + 'px'
+
+
+export const extend = (origin: any, target: any) => Object.keys(origin).forEach(key => target[key] = origin[key])
+export const isObject = (obj: any) => obj && Object.prototype.toString.call(obj) === '[object Object]'

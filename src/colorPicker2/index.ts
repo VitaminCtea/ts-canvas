@@ -1,4 +1,4 @@
-import { ColorPicker } from './component/ColorPicker'
+import { ColorPicker } from './components/ColorPicker'
 import './style.css'
 
 const colorPicker = new ColorPicker({

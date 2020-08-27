@@ -4,6 +4,7 @@ import { DrawClock } from '@/demo/DrawClock'
 import { hasClass, addClass, removeClass } from '@/util/index'
 // import '@/colorPicker/index'
 import '@/colorPicker2/index'
+import '@/steps/index'
 import './style/index.css'
 
 // const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement
