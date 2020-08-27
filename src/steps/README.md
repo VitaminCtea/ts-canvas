@@ -78,11 +78,11 @@
 
 #### 支持用户的配置表
 
-| 参数 | 说明 | 类型 | 演示 | 是否必选 | 默认值 |
+| 参数 | 说明 | 类型 | 配置演示 | 必选 | 默认值 |
 | :----: | :---- | :----: | :---- | :-----: | :----: |
 | el | 用于将步骤条挂载到页面上已存在的容器内 | HTMLElement | el: document.getElementById(container) | Yes | 无
-| content | 一个带有圆圈内的文本、步骤条标题、步骤条描述数组 | string[] | [{ text: '1', title: '步骤1', description: '这是步骤1' }, ...] | Yes | 无
+| content | 一个带有圆圈内的文本、步骤条标题、步骤条描述数组 | string[] | content: [{ text: '1', title: '步骤1', description: '这是步骤1' }, ...] | Yes | 无
 | successColor | 用于设置成功或已完成步骤的颜色，支持十六进制、RGB、HSL、HSV颜色格式 | string | successColor: blue | No | #67c23a |
-| fixedStep | 用于指定步骤，其中enabled表示是否启用，启用之后不产生下一步按钮。specifySteps内的数字不能大于content数组长度 | { enabled: boolean, specifySteps: number } | { enabled: true, specifySteps: 3 } | No | null
+| fixedStep | 用于指定步骤，其中enabled表示是否启用，启用之后不产生下一步按钮。specifySteps内的数字不能大于content数组长度 | { enabled: boolean, specifySteps: number } | fixedStep: { enabled: true, specifySteps: 3 } | No | null
 | alignCenter | 用于步骤小圆圈和标题、描述文本居中 | boolean | alignCenter: true | No | false
-| descriptionAlignment | 用于改变alignCenter启用的时候导致多段落描述文本也是居中状态。数组内的值对应每个步骤下的描述信息，用以使用的对齐方式。比如content的长度为5，那么，[ 'justify', 'center', 'center', 'center', 'center' ]数组依次对应步骤1，步骤2，...以此类推。需要说明的是如果只有某一个步骤是多段落的描述信息，为了布局好看，其他步骤描述信息少的建议使用center。 | (left/center/right/justify)[] or left/center/right/justify | [ 'justify', 'center', 'center', 'center', 'center' ] | No | center
+| descriptionAlignment | 用于改变alignCenter启用的时候导致多段落描述文本也是居中状态。数组内的值对应每个步骤下的描述信息，用以使用的对齐方式。比如content的长度为5，那么，[ 'justify', 'center', 'center', 'center', 'center' ]数组依次对应步骤1，步骤2，...以此类推。需要说明的是如果只有某一个步骤是多段落的描述信息，为了布局好看，其他步骤描述信息少的建议使用center。 | (left/center/right/justify)[] or left/center/right/justify | descriptionAlignment: [ 'justify', 'center', 'center', 'center', 'center' ] | No | center
