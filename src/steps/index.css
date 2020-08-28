@@ -1,0 +1,252 @@
+.step-container {
+    -webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+    padding: 20px;
+    height: 500px;
+}
+
+.step-container .step-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.step-container .steps-horizontal {
+    white-space: nowrap;
+}
+
+.step-container .step-content .step-item {
+    position: relative;
+    color: #c0c4cc;
+    border-color: #c0c4cc;
+    flex-basis: 50%;
+}
+
+.step-container .step-content .step-item .step-content-head__container {
+    width: 100%;
+    position: relative;
+}
+
+.step-container .step-content .step-item .step-content-head__container .step-line__container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    z-index: -1;
+    background-color: #c0c4cc;
+}
+
+.step-container .step-content .step-item .step-content-head__container .step-line__container .step-line {
+    width: 0;
+    height: 100%;
+    transition: all .2s;
+}
+
+.step-container .step-content .step-item .step-content-head__container .step-text__container {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid;
+    border-color: inherit;
+    border-radius: 50%;
+    background-color: #fff;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+    transition: all .2s;
+}
+
+.step-container .step-content .step-item .step-content-head__container .step-text,
+.step-container .step-content .step-item .step-content-head__container .step-icon {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fff;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+    overflow: hidden;
+}
+
+.step-container .step-content .step-item .step-content-head__container .step-icon {
+    border-color: #67c23a;
+}
+
+.step-container .step-content .step-item .step-content-head__container .step-icon::before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 5px;
+    border-left: 2px solid;
+    border-bottom: 2px solid;
+    border-color: inherit;
+    transform: translate(-50%, calc( -50% - 2px )) rotate(-45deg);
+    transition: transform .2s;
+}
+
+.step-container .step-content .step-item .step-content__main {
+    white-space: normal;
+}
+
+.step-container .step-content .step-item .step-content__main .step-content-main__title {
+    line-height: 20px;
+    font-size: 14px;
+    margin: 6px 0;
+    transition: all .2s;
+}
+
+.step-container .step-content .step-item .step-content__main .step-content-main__description {
+    font-size: 12px;
+    transition: all .2s;
+}
+
+.step-container .step-next-step__button {
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+    text-align: center;
+    box-sizing: border-box;
+    outline: none;
+    margin: 0;
+    transition: all .2s;
+    font-weight: 500;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    margin-top: 20px;
+    -webkit-appearance: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.step-container .step-next-step__button:hover {
+    background-color: #1989fa44;
+    color: #1989fa;
+}
+
+.step-container .step-content .step-item .is-process {
+    color: #303133;
+    border-color: #303133;
+}
+
+.step-container .step-content .step-item .step-content-head__container .is-text {
+    border-radius: 50%;
+    border: 2px solid;
+    border-color: inherit;
+}
+
+.step-container .step-content .step-item .is-success {
+    color: #67c23a;
+    border-color: #67c23a;
+}
+
+.step-container .step-content .step-item .step-content-head__container .step-line__container .is-line {
+    width: 100%;
+    background-color: #67c23a;
+}
+
+.step-container .step-content .step-item .step-content__main .step-content-main__title.is-wait, 
+.step-container .step-content .step-item .step-content__main .step-content-main__description.is-wait {
+    color: #c0c4cc;
+}
+
+.step-container .step-content .is-flex {
+    flex-basis: auto!important;
+    flex-shrink: 0;
+    flex-grow: 0;
+    max-width: 33.3333%;
+}
+
+.step-container .step-content .step-item .step-content-head__container .is-center,
+.step-container .step-content .step-item .step-content__main .is-center {
+    left: 50%;
+    right: -50%;
+}
+
+/* ? 纵向 */
+
+.step-container .steps-vertical {
+    flex-flow: column;
+    height: 100%;
+}
+
+.step-container .steps-vertical .is-vertical {
+    flex-basis: 50%;
+    display: flex;
+}
+
+.step-container .is-vertical .is-flex {
+    flex-basis: auto!important;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.step-container .steps-vertical .is-vertical .step-content-head__container {
+    position: relative;
+    width: 24px;
+    flex-grow: 0;
+}
+
+.step-container .steps-vertical .is-vertical .step-content-head__container .step-line__container {
+    width: 2px;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    height: auto !important;
+    transform: none;
+}
+
+.step-container .steps-vertical .is-vertical .step-content__main {
+    padding-left: 10px;
+    flex-grow: 1;
+}
+
+.step-container .steps-vertical .is-vertical .step-content__main .step-content-main__title {
+    font-size: 14px;
+    line-height: 24px;
+    padding-bottom: 2px;
+}
+
+.step-container .steps-vertical .is-vertical .step-content__main .step-content-main__description {
+    line-height: 20px;
+}
+
+.step-container .steps-vertical .is-vertical .step-content-head__container .is-icon {
+    width: 25px;
+    height: 25px;
+    padding: 6px 0;
+    overflow: hidden;
+}
+
+.step-container .steps-horizontal .is-horizontal .step-content-head__container .is-icon {
+    width: 40px;
+    overflow: hidden;
+}
+
+.step-container .steps-vertical .is-vertical .step-content-head__container .step-text__container .step-icon__inner {
+    display: inline-block;
+    user-select: none;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1;
+    color: inherit;
+}
+
+.step-container .steps-horizontal .is-horizontal .step-content-head__container .step-text__container .step-icon__inner[class^=icon-],
+.step-container .steps-vertical .is-vertical .step-content-head__container .step-text__container .step-icon__inner[class^=icon-] {
+    font-size: 25px;
+    font-weight: 400;
+}

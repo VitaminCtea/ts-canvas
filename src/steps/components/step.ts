@@ -29,10 +29,12 @@ enum StepItemWidth {
 type CreateDomArgs = { 
     isLastStep: boolean
     title: number | string
-    iconText: string
+    text: string
     desc: string
     stepSpace: number | string
     descriptionAlignment: StepInterface['descriptionAlignment']
+    direction: 'horizontal' | 'vertical'
+    icon: string
 }
 
 export class Step {
@@ -50,7 +52,7 @@ export class Step {
     public stepItem: HTMLDivElement | null = null
     public stepLineContainer: HTMLDivElement | null = null
 
-    public createDom({ isLastStep, title, iconText, desc, stepSpace, descriptionAlignment }: CreateDomArgs) {
+    public createDom({ isLastStep, title, text, desc, stepSpace, descriptionAlignment, direction, icon }: CreateDomArgs) {
         const stepItem: HTMLDivElement = this.createElement('div', 'step-item') as HTMLDivElement
         const stepHead: HTMLDivElement = this.createElement('div', 'step-content-head__container') as HTMLDivElement
         const stepLineContainer: HTMLDivElement = this.createElement('div', 'step-line__container') as HTMLDivElement
@@ -70,14 +72,23 @@ export class Step {
         this.stepTitle = stepTitle
         this.stepDescription = stepDescription
         this.stepTextContainer = stepTextContainer
+
         this.stepIconElement = this.createElement('span', 'step-icon') as HTMLSpanElement
 
-        this.stepText!.style.transition = 'all .2s'
+        if (!icon) {
+            this.stepText!.style.transition = 'all .2s'
+            this.stepText!.textContent = `${ text }`
+        }
+
+        switch (direction) {
+            case 'horizontal': addClass(this.stepItem, 'is-horizontal'); break
+            case 'vertical': addClass(this.stepItem, 'is-vertical'); break
+            default: throw new TypeError('The layout must be horizontal or vertical.')
+        }
 
         this.addAppointElementClassName()
 
         stepTitle.textContent = `${ title }`
-        stepText.textContent = `${ iconText }`
         stepDescription.textContent = `${ desc }`
 
         stepShowContent.appendChild(stepTitle)
@@ -88,18 +99,27 @@ export class Step {
         if (!isLastStep) {
             stepLineContainer.appendChild(stepLine)
             stepHead.appendChild(stepLineContainer)
-            setElementPadding('right')
+            if (direction !== 'vertical') setElementPadding('right')
         } else {
             if (!this.alignCenter) {
                 stepItem.style.flexBasis = StepItemWidth.FLEX_BASIS
-                stepItem.style.maxWidth = StepItemWidth.MAX_WIDTH
                 addClass(stepItem, ClassName.IS_FLEX)
             }
+            if (direction !== 'vertical') stepItem.style.maxWidth = StepItemWidth.MAX_WIDTH
         }
 
         if (this.alignCenter) this.setElementCenterStyle(descriptionAlignment, setElementPadding)
+        
+        if (icon) {
+            this.stepIconElement = this.createElement('i', `${ icon }`) as HTMLElement
+            addClass(this.stepIconElement!, 'step-icon__inner')
+            addClass(this.stepTextContainer!, 'is-icon')
+            stepTextContainer.style.borderRadius = '0'
+            stepTextContainer.style.border = 'none'
+        }
 
-        stepTextContainer.appendChild(stepText)
+        stepTextContainer.appendChild(this.stepText!)
+
         stepHead.appendChild(stepTextContainer)
 
         stepItem.appendChild(stepHead)
@@ -119,21 +139,19 @@ export class Step {
 
     public setElementPadding(el: HTMLElement, val: number | string) {
         return (suffix: string) => {
-            if (suffix) suffix = suffix.charAt(0).toUpperCase() + suffix.substring(1)
-            ;(el.style as any)[`padding${ suffix }`] = `0 ${ typeof val === 'number' ? val + 'px' : typeof val === 'string' ? val : '' }`
+            let result: string
+            if (suffix) {
+                suffix = suffix.charAt(0).toUpperCase() + suffix.substring(1)
+                result = `${ typeof val === 'number' ? val + 'px' : typeof val === 'string' ? val : '' }`
+            } else result = `0 ${ val }`
+
+            ;(el.style as any)[`padding${ suffix }`] = result
         }
     }
 
     public setElementCenter(el: HTMLElement) {
         el.style.left = '50%'
         el.style.transform = 'translateX(-50%)'
-    }
-
-    public addAppointElementClassName(callback?: (el: HTMLElement) => void) {
-        [ this.stepHead!, this.stepTitle!, this.stepDescription! ].forEach(el => {
-            if (callback) callback(el)
-            addClass(el, `is-${ this.processStatus }`)
-        })
     }
 
     public createElement(tag: string, className: string) {
@@ -161,12 +179,15 @@ export class Step {
         })
     }
 
-    public updateStatus(isFixedStep: boolean = false) {
-        if (this.processStatus === 'success') {
+    public updateStatus(isFixedStep: boolean = false, isIcon: boolean = false) {
+        if (this.processStatus === 'success' && !isIcon) {
             this.setStepTextOpacity(0)
             if (!isFixedStep) this.replaceElement()
             else this.replaceChild(this.stepIconElement!, this.stepText!)
         }
+
+        if (isIcon) this.replaceChild(this.stepIconElement!, this.stepText!)
+
         this.addAppointElementClassName(el => this.removeElementClassName(el, [ ClassName.IS_WAIT, ClassName.IS_PROCESS ]))
     }
 
@@ -176,14 +197,21 @@ export class Step {
         )
     }
 
+    public addAppointElementClassName(callback?: (el: HTMLElement) => void) {
+        [ this.stepHead!, this.stepTitle!, this.stepDescription! ].forEach(el => {
+            if (callback) callback(el)
+            addClass(el, `is-${ this.processStatus }`)
+        })
+    }
+
     public removeElementClassName(el: HTMLElement, classNames: ClassName[]) {
         classNames.forEach(className => removeClass(el, className))
     }
 
-    public reset() {
+    public reset(isIconStep: boolean = false) {
         this.setProcessStatus('wait')
         this.setLineWidth(0)
-        this.replaceChild(this.stepText!, this.stepIconElement!)
+        if (!isIconStep) this.replaceChild(this.stepText!, this.stepIconElement!)
         this.setStepTextOpacity(1)
         this.resetClassName()
     }
@@ -201,6 +229,7 @@ export class Step {
     }
 
     public replaceChild(newNode: HTMLElement, oldNode: HTMLElement) {
+        if (this.stepTextContainer!.firstElementChild?.tagName === 'I') return
         this.stepTextContainer!.replaceChild(newNode, oldNode)
     }
 

@@ -1,10 +1,11 @@
+import { addClass } from '@/util/index'
 import { Step, Alignment } from './step'
 
 enum ProcessStatus { WAIT = 'wait', PROCESS = 'process', SUCCESS = 'success', FINISH = 'finish' }
 
-type Content = { text: string, title: string, description: string }[]
+type Content = { text?: string, title: string, description: string }[]
 
-type Options = { 
+type StepsOptions = { 
     el: HTMLElement
     content: Content
     successColor?: string
@@ -13,9 +14,11 @@ type Options = {
     alignCenter?: boolean
     descriptionAlignment?: Alignment | Alignment[]
     button?: HTMLElement | null
+    direction?: 'horizontal' | 'vertical'
+    icons?: string[] | null
 }
 
-export class Steps {
+export class Steps implements StepsOptions {
     public currentStatus: Step | null = null
     public steps: Step[] = []
     public content: Content
@@ -24,37 +27,62 @@ export class Steps {
     public active: number = 1
     public successColor: string = ''
     public stepSpace: number | string
-    public fixedStep: Options['fixedStep']
-    public alignCenter: Options['alignCenter']
-    public descriptionAlignment: Options['descriptionAlignment'] = 'center'
-    public button: Options['button'] = null
+    public fixedStep: StepsOptions['fixedStep']
+    public alignCenter: StepsOptions['alignCenter']
+    public descriptionAlignment: StepsOptions['descriptionAlignment'] = 'center'
+    public button: StepsOptions['button'] = null
+    public direction: StepsOptions['direction'] = 'horizontal'
+    public icons: StepsOptions['icons'] = null
 
     private index: number = 0
     private count: number = 1
 
-    constructor(options: Options) {
-        let { el, content, successColor, stepSpace = '10%', fixedStep, alignCenter = false, descriptionAlignment, button } = options
+    constructor(options: StepsOptions) {
+        let { 
+            el, 
+            content, 
+            successColor, 
+            fixedStep, 
+            button, 
+            icons,
+            descriptionAlignment, 
+            stepSpace = '10%', 
+            alignCenter = false, 
+            direction = 'horizontal' 
+        } = options
 
         this.el = el
         this.content = content
 
         if (successColor) this.successColor = this.getColorFormat(successColor)
-
-        this.stepSpace = stepSpace
-
-        if (fixedStep) {
+        if (descriptionAlignment) this.descriptionAlignment = descriptionAlignment
+        if (icons && Array.isArray(icons)) this.icons = icons
+        if (fixedStep && [ 'horizontal', 'vertical' ].includes(direction)) {
             this.fixedStep = fixedStep
             this.active = this.getFixedStep(fixedStep?.specifySteps!)
         }
 
+        this.stepSpace = stepSpace
         this.alignCenter = alignCenter
-        if (descriptionAlignment) this.descriptionAlignment = descriptionAlignment
-
         this.button = button
+        this.direction = direction
         this.init()
     }
 
     public init() {
+        if (this.direction === 'vertical' && this.alignCenter) 
+            throw new Error(
+                'When the layout direction is vertical, alignCenter should be set to false or not.'
+            )
+
+        if (this.direction === 'vertical' && !this.fixedStep?.enabled)
+            throw new Error(
+                'When the layout direction is vertical, fixed layout should be enabled, and the solution sets the enabled property in fixedStep to true'
+            )
+
+        if (this.icons && Array.isArray(this.icons) && this.icons.length < this.content.length) 
+            throw new Error('Icon array length cannot be less than content length')
+
         const contentLength: number = this.content.length
         const fragment: DocumentFragment = document.createDocumentFragment()
 
@@ -62,21 +90,27 @@ export class Steps {
 
         this.content.forEach((content, index) => {
             const step: Step = new Step()
-            const { title, text: iconText, description: desc } = content
+            const { title, description: desc } = content
             const descriptionAlignment: Alignment = 
                 (this.isArray(this.descriptionAlignment) ? this.descriptionAlignment![index] : this.descriptionAlignment!) as Alignment
+                
             step.alignCenter = this.alignCenter!
+
             if (index === 0) step.setProcessStatus(ProcessStatus.PROCESS)
+
             fragment.appendChild(
                 step.createDom({
+                    title,
+                    text: (this.icons ? '' : (index + 1) as any)!,
+                    desc,
+                    descriptionAlignment,
                     isLastStep: index === contentLength - 1,
                     stepSpace: this.stepSpace,
-                    title,
-                    iconText,
-                    desc,
-                    descriptionAlignment
+                    direction: this.direction!,
+                    icon: this.icons ? this.icons[index] : ''
                 })
             )
+
             this.steps[this.steps.length] = step
         })
 
@@ -85,25 +119,32 @@ export class Steps {
         const stepContainer: HTMLDivElement = this.currentStatus!.createElement('div', 'step-container') as HTMLDivElement
         const stepContent: HTMLDivElement = this.currentStatus!.createElement('div', 'step-content') as HTMLDivElement
 
+        this.setDirection(stepContent, this.direction)
+
         stepContent.appendChild(fragment)
         stepContainer.appendChild(stepContent)
 
         let nextStepButton: HTMLElement
 
-        if (!this.fixedStep?.enabled) {
+        if (!this.fixedStep?.enabled && this.direction !== 'vertical') {
             if (!this.button) {
                 nextStepButton = this.currentStatus!.createElement('button', 'step-next-step__button') as HTMLButtonElement
                 nextStepButton.textContent = '下一步'
-            } else nextStepButton = this.button
+            } else {
+                nextStepButton = this.button
+            }
 
             this.setActive(1)
 
             this.nextStepButton = nextStepButton as HTMLButtonElement
             this.registerClickEvent(this.nextStepButton, 'click', this.stepClick.bind(this))
             stepContainer.appendChild(nextStepButton)
+
         } else {
             this.setFixedStep()
         }
+
+        if (this.icons) this.initIncludeIconStep(true)
 
         this.el.appendChild(stepContainer)
 
@@ -111,7 +152,7 @@ export class Steps {
         const stylesheets: StyleSheetList = document.styleSheets
         for (let i: number = 0; i < stylesheets.length; i++) {
             const rules: any = stylesheets[i].cssRules
-            if (rules[0].selectorText.indexOf('step') !== -1) {
+            if (rules[1].selectorText.indexOf('step') !== -1) {
                 stepRule = stylesheets[i]
                 break
             }
@@ -127,10 +168,16 @@ export class Steps {
 
                 if (cssText.indexOf('is-line') !== -1) rule.style.backgroundColor = this.successColor
 
+                if ((cssText.indexOf('is-flex') !== -1) && this.direction === 'vertical') rule.style.removeProperty('max-width')
+
                 const splitSelector: string[] = rule.selectorText.split(' ')
                 if (splitSelector.includes('.step-icon')) rule.style.borderColor = this.successColor
             })
         }
+    }
+
+    public setDirection(el: HTMLElement, direction: StepsOptions['direction']) {
+        addClass(el, `steps-${ direction }`)
     }
 
     public getColorFormat(color: string) {
@@ -208,12 +255,11 @@ export class Steps {
 
     public stepClick() {
         if (this.active > this.content.length) {
-            this.steps.forEach(step => step.reset())
+            this.steps.forEach(step => step.reset(!!this.icons))
             this.currentStatus = this.steps[0]
             this.currentStatus.setProcessStatus(ProcessStatus.PROCESS)
             this.currentStatus.resetClassName()
-            this.active = 1
-            this.count = 1
+            this.active = this.count = 1
             this.index = 0
             return
         }
@@ -260,18 +306,35 @@ export class Steps {
             lineIndex = this.active - 2
         }
 
+        this.initFixedStep(index)
+        this.initLine(lineIndex)
+        this.initIncludeIconStep()
+    }
+
+    public initLine(lineIndex: number) {
+        // = 初始化步骤线
+        while (lineIndex > -1) {
+            this.steps[lineIndex].updateProcessLine()
+            lineIndex--
+        }
+    }
+
+    public initFixedStep(index: number) {
         while (index > -1) {
             const step: Step = this.steps[index]
             step.setProcessStatus(ProcessStatus.SUCCESS)
             step.updateStatus(true)
             index--
         } 
+    }
 
-        // = 更新线
-
-        while (lineIndex > -1) {
-            this.steps[lineIndex].updateProcessLine()
-            lineIndex--
+    public initIncludeIconStep(isButtonStep: boolean = false) {
+        if (this.icons) {
+            let i: number = isButtonStep ? 0 : this.active
+            while (i < this.content.length) {
+                this.steps[i].updateStatus(true, true)
+                i++
+            }
         }
     }
 
@@ -279,7 +342,7 @@ export class Steps {
         if (specifySteps == null) return this.active
         if (typeof specifySteps === 'string') {
             specifySteps = parseInt(specifySteps, 10)
-            if (isNaN(specifySteps)) throw new TypeError('The specififsteps parameter cannot be converted to a valid number')
+            if (isNaN(specifySteps)) throw new TypeError('The specifySteps parameter cannot be converted to a valid number')
         }
         return Math.max(Math.min(this.content.length - 1, specifySteps), 0)
     }

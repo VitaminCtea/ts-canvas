@@ -26,6 +26,8 @@ app.use(
 
 app.use(express.static('image'))
 
+app.use(express.static('public'))
+
 // 将文件 serve 到 port 3000。
 app.listen(PORT, function () {
     console.log("Example app listening on port 3000!\n")

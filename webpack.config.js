@@ -42,7 +42,17 @@ module.exports = {
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
-                use: ["file-loader"],
+                use: [
+                    {
+                        loader: "url-loader",
+                        options: {
+                            name: "[name]-[hash:5].min.[ext]",
+                            limit: 5000, // fonts file size <= 5KB, use 'base64'; else, output svg file
+                            publicPath: "fonts/",
+                            outputPath: "fonts/"
+                      }
+                    }
+                  ]
             },
         ],
     },

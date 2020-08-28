@@ -35,7 +35,7 @@
     transition: transform .3s ease-in-out;
 }
 
-[class*=" icon-"], [class^=icon-] {
+/* [class*=" icon-"], [class^=icon-] {
     font-family: element-icons!important;
     speak: none;
     font-style: normal;
@@ -47,7 +47,7 @@
     display: inline-block;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 .icon-caret-right:before {
     content: "";
