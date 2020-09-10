@@ -1,6 +1,6 @@
 import { addClass } from '@/util/index'
 import { Color } from '../color'
-import { Observer } from '../Observer'
+import { Observer } from '@/util/index'
 
 export class PresetColorArea {
     public node: HTMLDivElement

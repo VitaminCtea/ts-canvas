@@ -231,9 +231,9 @@ export class Color implements ColorInterface {
                 break
             case 6:
             case 8:
-                this.r = parseHexChannel(value.substr(0, 2))
-                this.g = parseHexChannel(value.substr(2, 4))
-                this.b = parseHexChannel(value.substr(4, 6))
+                this.r = parseHexChannel(value.substring(0, 2))
+                this.g = parseHexChannel(value.substring(2, 4))
+                this.b = parseHexChannel(value.substring(4, 6))
                 break
         }
 

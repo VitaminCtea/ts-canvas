@@ -1,0 +1,20 @@
+.scrollBar-container {
+    width: 6px;
+    position: absolute;
+    border-radius: 4px;
+}
+
+.scrollBar-container .scrollBar-thumb {
+    border-radius: 4px;
+    transform: translateY(0%);
+}
+
+.scrollBar-horizontal {
+    left: 0;
+    bottom: 0;
+}
+
+.scrollBar-vertical {
+    right: 0;
+    top: 0;
+}

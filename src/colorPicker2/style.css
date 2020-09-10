@@ -269,6 +269,7 @@
 
 .color-picker-view__container .color-picker-input__container .input-wrapper:last-child input {
     flex: 1;
+    max-width: 100%;
 }
 
 .color-picker-view__container .color-picker-input__container .input-wrapper:last-child .name {

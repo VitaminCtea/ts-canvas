@@ -1,5 +1,5 @@
 import { addClass, removeClass } from "@/util/index"
-import { Observer } from "../Observer"
+import { Observer } from "@/util/index"
 
 enum CopyText {
     COPY_DEFAULT_TEXT = '复制颜色',

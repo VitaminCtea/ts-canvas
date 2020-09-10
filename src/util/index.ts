@@ -65,4 +65,161 @@ export const updateSliderPosition = (el: HTMLDivElement, pos: number) =>
 
 
 export const extend = (origin: any, target: any) => Object.keys(origin).forEach(key => target[key] = origin[key])
+
 export const isObject = (obj: any) => obj && Object.prototype.toString.call(obj) === '[object Object]'
+
+export class Observer {
+    public subscribers: { [ PropName: string ]: Function[] } = {}
+
+    public listen(registerName: string, fn: Function) {
+        if (!this.subscribers[registerName]) {
+            this.subscribers[registerName] = []
+        }
+        const length: number = this.subscribers[registerName].length
+        this.subscribers[registerName][length] = fn
+    }
+
+    public trigger(...args: any[]) {
+        const key: string = args.shift()
+        const fns: Function[] = this.subscribers[key]
+
+        if (!fns || fns.length === 0) return false
+
+        fns.forEach(fn => fn.apply(this, args))
+    }
+
+    public remove(key: string, fn: Function) {
+        const fns: Function[] = this.subscribers[key]
+        if (!fns || fns.length === 0) return false
+        if (!fn) {
+            fns && (fns.length = 0)
+            return
+        }
+        const index: number = fns.indexOf(fn)
+        if (index !== -1) fns.splice(index, 1)
+    }
+}
+
+export const createElement = (tag: string, className: string) => {
+    const el: HTMLElement = document.createElement(tag)
+    addClass(el, className)
+    return el
+}
+
+export const event: { 
+    on: Function, 
+    off: Function 
+} = {
+    on: () => {},
+    off: () => {}
+}
+
+event.on = (function (_this: typeof event) {
+    if (!!(document.addEventListener)) {
+        return (element: any, eventName: string, handler: Function, useCapture: boolean = false) => {
+            if (element && eventName && handler) element.addEventListener(eventName, handler, useCapture)
+        }
+    } else if (!!((document as any).detachEvent)) {
+        return (element: any, eventName: string, handler: Function) => {
+            if (element && eventName && handler) (element as any).attachEvent('on' + eventName, handler)
+        }
+    } else {
+        return (element: any, eventName: string, handler: Function) => 
+            (element && eventName && handler) && ((element as any)['on' + eventName] = handler)
+    }
+})(event)
+
+event.off = (function (_this: typeof event) {
+    if (!!(document.removeEventListener)) {
+        return (element: any, eventName: string, handler: Function) => {
+            if (element && eventName && handler) {
+                element.removeEventListener(eventName, handler)
+            }
+        }
+    } else if (!!((document as any).detachEvent)) {
+        return (element: any, eventName: string, handler: Function) => {
+            if (element && eventName && handler) (element as any).detachEvent('on' + eventName, handler)
+        }
+    } else {
+        return (element: any, eventName: string, handler: Function) => (element && eventName && handler) && ((element as any)['on' + eventName] = null)
+    }
+})(event)
+
+const upper = (attr: string) => attr.charAt(0).toUpperCase() + attr.substring(1)
+
+export const getVendorPrefix = (element: HTMLElement) => {
+    const match = (Object.values(window.getComputedStyle(element, null)).join('').match(/-(moz|webkit|ms)-/) || ['', 'o'])[1]
+    const vendors = {
+        o: 'O', // - Opera
+        webkit: 'webkit',   // = Chrome and Safari
+        moz: 'Moz', // ? Firefox
+        ms: 'ms'    // # IE
+    }
+    
+    return vendors[match as keyof typeof vendors]
+}
+
+const getStyleName = (element: HTMLElement, styleName: string) => {
+    const prefix = getVendorPrefix(element)
+
+    let prefixedStyleName
+
+    if (styleName in element.style) return styleName
+
+    prefixedStyleName = prefix + upper(styleName)
+
+    if (prefixedStyleName in element.style) return prefixedStyleName
+
+    return null
+}
+
+export const createProperty = (property: string) => getStyleName(document.body, property)
+
+export const isDifferentElements = (e: MouseEvent) => e.target !== e.currentTarget
+
+const isInViewport = (container: HTMLElement, el: HTMLElement) => {
+    const containerBottom = container.scrollTop + container.clientHeight
+    return el.scrollTop >= container.scrollTop || el.scrollTop + el.offsetHeight <= containerBottom
+}
+
+const getElementStyle = (el: HTMLElement) => window.getComputedStyle(el, null)
+
+const getPadding = (...rest: string[]) => rest.map(padding => removeCSSUnit(padding))
+
+const getTotalOffsetTop = (container: HTMLElement, selectTarget: HTMLElement) => {
+    let totalOffsetParent: number = 0
+    let currentSelectOffsetParent: HTMLElement = selectTarget.offsetParent as HTMLElement
+
+    while (currentSelectOffsetParent && container !== currentSelectOffsetParent && container.contains(currentSelectOffsetParent)) {
+        totalOffsetParent += currentSelectOffsetParent.offsetTop
+        currentSelectOffsetParent = currentSelectOffsetParent.offsetParent as HTMLElement
+    }
+
+    return totalOffsetParent
+}
+
+// & getBoundingClientRect()方法的兼容函数
+export const scrollToView = (container: HTMLElement, selectTarget: HTMLElement) => {
+    if (!selectTarget || !isInViewport(container, selectTarget)) return
+
+    /**
+     * = 来自MDN解释: 
+     * ? HTMLElement.offsetParent 是一个只读属性，返回一个指向最近的（指包含层级上的最近）包含该元素的定位元素或者最近的table,td,th,body元素。
+     * & 当元素的 style.display 设置为 "none" 时，offsetParent 返回 null。
+     * $ offsetParent 很有用，因为 offsetTop 和 offsetLeft 都是相对于其内边距边界的。
+    */
+    let totalOffsetTop: number = getTotalOffsetTop(container, selectTarget)
+
+    const top: number = selectTarget.offsetTop + totalOffsetTop
+    const bottom: number = top + selectTarget.offsetHeight
+
+    const { paddingTop, paddingBottom } = getElementStyle(container.firstElementChild as HTMLElement)
+
+    const [ pt, pb ] = getPadding(paddingTop, paddingBottom)
+
+    const containerTop: number = container.scrollTop - pt
+    const containerBottom: number = containerTop + container.clientHeight - pb
+
+    if (top < containerTop) container.scrollTop = top - pt
+    else if (bottom > containerBottom) container.scrollTop = bottom - (container.clientHeight - pb)
+}

@@ -6,6 +6,7 @@ import { hasClass, addClass, removeClass } from '@/util/index'
 import '@/colorPicker2/index'
 import '@/steps/index'
 import './style/index.css'
+import '@/cascadeSelector/index'
 
 // const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement
 // const appTest: ApplicationTest = new ApplicationTest(canvas)
@@ -540,3 +541,37 @@ const toHex = ({ r, g, b }: { r: number; g: number; b: number }): string => {
 
 // 255,182,193
 console.log('浅粉红(LightPink)十六进制颜色为: ' + toHex({ r: 255, g: 182, b: 193 }))
+
+const arr = [
+    {
+        value: 1,
+        children: [{
+            value: 2,
+            children: [{
+                value: 3
+            }]
+        }]
+    },
+    {
+        value: 4,
+        children: [{
+            value: 5,
+            children: [{
+                value: 6
+            }]
+        }]
+    }
+]
+
+const getValue = (arr: any, val: number, result: any = []) => {
+    for (let i: number = 0; i < arr.length; i++) {
+        if (arr[i].value === val) {
+            result.push(arr[i])
+            return result[0]
+        }
+        getValue(arr[i].children || [], val, result)
+    }
+    return result[0]
+}
+
+console.log(getValue(arr, 5))

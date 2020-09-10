@@ -1,4 +1,4 @@
-import { addClass, initCurrentSliderPosition, updateSliderPosition, getBorderWidth, getElementTotalWidth } from "@/util/index"
+import { addClass, initCurrentSliderPosition, updateSliderPosition, getElementTotalWidth } from "@/util/index"
 import { Color } from "../color"
 
 export class AlphaArea {
