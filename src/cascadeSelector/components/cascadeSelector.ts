@@ -1,16 +1,16 @@
-import { addClass, createElement, createProperty, event, isDifferentElements, removeClass } from "@/util/index"
+import { addClass, createElement, createProperty, event, removeClass, setStyle } from "@/util/index"
 import { CascadeSelectorInput } from "./cascadeSelectorInput"
 import { CascadeSelectorPanel } from './cascadeSelectorPanel'
 import { Options } from './node'
 
-const setStyle = (el: HTMLElement, attr: string, value: string | number) => el.style[attr as any] = value as string
-
 class ShowPanel {
     public cascadeSelector: any
     public state: string = 'show'
+
     public constructor(cascadeSelector: any) {
         this.cascadeSelector = cascadeSelector
     }
+
     public execute(el: HTMLElement, content: HTMLElement, className: string) {
         setStyle(el, 'opacity', 1)
         setStyle(el, 'transform', 'scaleY(1)')
@@ -22,9 +22,11 @@ class ShowPanel {
 class HidePanel {
     public cascadeSelector: any
     public state: string = 'hide'
+
     public constructor(cascadeSelector: any) {
         this.cascadeSelector = cascadeSelector
     }
+
     public execute(el: HTMLElement, content: HTMLElement, className: string) {
         setStyle(el, 'opacity', 0)
         setStyle(el, 'transform', 'scaleY(0)')

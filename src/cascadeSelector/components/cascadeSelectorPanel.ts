@@ -1,4 +1,4 @@
-import { addClass, createElement, Observer, removeClass, scrollToView } from "@/util/index"
+import { addClass, createElement, Observer, removeClass, removeWhiteSpace, scrollToView } from "@/util/index"
 import { Node, Options } from '@/cascadeSelector/components/node'
 import { TargetHighlight } from './targetHighlight'
 
@@ -128,7 +128,7 @@ export class CascadeSelectorPanel {
         if (!this.checkStrictly) 
             return {
                 menuContainerElement: this.getCurrentTargetElement(paths),
-                menuItemElement: this.isLIElement(paths) ? paths[1] : e.target as HTMLElement
+                menuItemElement: this.isNotLIElement(paths) ? paths[1] : e.target as HTMLElement
             }
 
         return {
@@ -322,12 +322,8 @@ export class CascadeSelectorPanel {
     }
 
     public getPath() {
-        this.separator = this.separator === '/' ? this.separator : this.trim(this.separator)
+        this.separator = this.separator === '/' ? this.separator : removeWhiteSpace(this.separator)
         return this.path.join(` ${ this.separator } `)
-    }
-
-    public trim(str: string) {
-        return str.replace(/^\s*((?:[\s\S]*\S)?)\s*$/, '$1')
     }
 
     public setPath(node: Node) {
@@ -347,10 +343,10 @@ export class CascadeSelectorPanel {
     }
 
     public getCurrentTargetElement(paths: HTMLElement[]) {
-        return this.isLIElement(paths) ? paths[5] : paths[4]
+        return this.isNotLIElement(paths) ? paths[5] : paths[4]
     }
 
-    public isLIElement(paths: HTMLElement[]) {
+    public isNotLIElement(paths: HTMLElement[]) {
         return paths[0].nodeName !== 'LI'
     }
 
@@ -369,17 +365,6 @@ export class CascadeSelectorPanel {
         this.isRegisterMouseEvent = false
     }
 
-    public createPaths(node: Node, result: string[][]) {
-        const paths: string[] = []
-        let parentNode: Node | null = node.parentNode
-        while (parentNode !== null) {
-            paths.unshift(parentNode.label)
-            parentNode = parentNode.parentNode
-        }
-        paths.push(node.label)
-        result.push(paths)
-    }
-
     public generatorNodeTree(content: Options, parent: any = null, depth: number = 1) {
         return content.map(item => {
             const node: Node = new Node()
@@ -396,6 +381,17 @@ export class CascadeSelectorPanel {
             return node
         })
     }
+
+    // public createPaths(node: Node, result: string[][]) {
+    //     const paths: string[] = []
+    //     let parentNode: Node | null = node.parentNode
+    //     while (parentNode !== null) {
+    //         paths.unshift(parentNode.label)
+    //         parentNode = parentNode.parentNode
+    //     }
+    //     paths.push(node.label)
+    //     result.push(paths)
+    // }
 
     // ? 根据指定关键字搜索，最后在nodes中找出关键字出现的所有路径
     // public getSearchPath(nodes: Node[], keywords: string, isMiddle: boolean = false, result: string[][] = []) {

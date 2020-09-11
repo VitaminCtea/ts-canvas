@@ -143,7 +143,7 @@ export class ScrollBar {
         // - 取滑块的一半是为了当点击滑道的时候让滑块的中间部分走到鼠标点的位置，此时鼠标的点为滑块的中心点
         const thumbHalf = (this.thumb as any)[this.bar.offset] / 2 | 0
 
-        // = (总距离 - 滑块的一半) = 实际的总距离 -> 实际的总距离 * 100 = 百分比 -> 百分比 / 滑道的总高度 = 滑块位置的百分比
+        // = (总距离 - 滑块的一半) = 实际的总距离 -> 实际的总距离 / 滑道的总高度 = 滑块位置的百分比
         const thumbPositionPercentage = (offset - thumbHalf) / (this.container as any)[this.bar.offset]
         
         // & 设置超出父级高度元素的scrollTop值，其中公式为thumbPositionPercentage * 超出父级高度元素的高/宽(scrollHeight/scrollWidth)
@@ -165,13 +165,13 @@ export class ScrollBar {
             (e.currentTarget as any)[this.bar.offset] - 
             (((e as any)[this.bar.client] - (e as any).currentTarget.getBoundingClientRect()[this.bar.direction]))
 
-        event.on(document, 'mousemove', this.mouseMove = this.mouseMoveDocumentHandler.bind(this))
-        event.on(document, 'mouseup', this.mouseUp = this.mouseUpDocumentHandler.bind(this))
+        event.on(document, 'mousemove', this.mouseMove = this.mouseMoveHandler.bind(this))
+        event.on(document, 'mouseup', this.mouseUp = this.mouseUpHandler.bind(this))
         
         document.onselectstart = () => false    // ? 防止点击时候产生拖放
     }
 
-    public mouseUpDocumentHandler(e: MouseEvent) {
+    public mouseUpHandler(e: MouseEvent) {
         e.stopPropagation()
         if (this.cursorDown) {
             // ? 重置操作
@@ -189,7 +189,7 @@ export class ScrollBar {
         }
     }
 
-    public mouseMoveDocumentHandler(e: MouseEvent) {
+    public mouseMoveHandler(e: MouseEvent) {
         e.stopPropagation()
         // ! 如果没有点击并且鼠标不在滑块上(也就是没有得到axis值的时候，无效)
         if (!this.cursorDown || !(this as any)[this.bar.axis]) return
@@ -200,7 +200,7 @@ export class ScrollBar {
         // & 滑块总高度/总宽度 - 点击滑块的位置距离滑块底部的距离 = 滑块点击的位置(相对于滑块)
         const thumbClickPosition: number = (this.thumb as any)[this.bar.offset] - (this as any)[this.bar.axis]
 
-        // * (偏移距离 - 滑块点击的位置) * 100 / 容器的总高度 = 滑块位置的百分比
+        // * (偏移距离 - 滑块点击的位置) / 容器的总高度 = 滑块位置的百分比
         const thumbPositionPercentage = ((offset - thumbClickPosition) / (this.el as any)[this.bar.offset])
 
         this.setOverflowElementScroll(thumbPositionPercentage)
@@ -218,10 +218,6 @@ export class ScrollBar {
             `translate${ this.bar.axis as any }(
                 ${ (this.targetOverflowElement as any)[this.bar.scroll] / (this.el as any)[this.bar.content] * 100 }%
             )`
-    }
-
-    public destroyed() {
-        event.off(document, 'mouseup', this.mouseUp)
     }
 
     public getSafeNumber(num: number) {
@@ -246,5 +242,9 @@ export class ScrollBar {
             }
         }
         return result[0]
+    }
+
+    public destroyed() {
+        event.off(document, 'mouseup', this.mouseUp)
     }
 }

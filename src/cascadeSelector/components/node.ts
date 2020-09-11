@@ -257,14 +257,6 @@ export class Node {
         el.style[attr as any] = value
     }
 
-    public getContent(label: string, content: Options): any {
-        for (let i: number = 0; i < content.length; i++) {
-            if (content[i].label === label) return content[i].children
-            else return this.getContent(label, content[i].children! || [])
-        }
-        return null
-    }
-
     public removeIcon() {
         this.clickLIElement!.removeChild(this.clickLIElement!.firstElementChild as HTMLElement)
         removeClass(this.clickLIElement!, TargetHighlight.LI_HIGHLIGHT)

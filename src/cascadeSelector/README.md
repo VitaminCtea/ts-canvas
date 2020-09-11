@@ -2,7 +2,7 @@
 
 * <font size="2">根据数据结构可以封装出Tree Node类，通过Tree Node得出当前节点的children和当前节点的父节点parentNode是谁，然后利用观察者模式进行更新与添加节点。</font>
 
-* <font size="2">符合elementUI中的级联选择器的大部分功能。由于elementUI中有些功能个人认为是无用的，所以废弃了某些特性。</font>
+* <font size="2">符合elementUI中的级联选择器的大部分功能，省略了部分功能，可以说是简化的版本。</font>
 
 #### 带滚动条面板DOM结构演示
 

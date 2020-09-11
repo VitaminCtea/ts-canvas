@@ -223,3 +223,7 @@ export const scrollToView = (container: HTMLElement, selectTarget: HTMLElement) 
     if (top < containerTop) container.scrollTop = top - pt
     else if (bottom > containerBottom) container.scrollTop = bottom - (container.clientHeight - pb)
 }
+
+export const removeWhiteSpace = (str: string) => str.replace(/^\s*((?:[\s\S]*\S)?)\s*$/, '$1')
+
+export const setStyle = (el: HTMLElement, attr: string, value: string | number) => el.style[attr as any] = value as string
