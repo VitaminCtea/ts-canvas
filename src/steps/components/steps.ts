@@ -150,7 +150,7 @@ export class Steps implements StepsOptions {
 
         let stepRule: CSSStyleSheet
         const stylesheets: StyleSheetList = document.styleSheets
-        for (let i: number = 0; i < stylesheets.length; i++) {
+        for (let i: number = stylesheets.length - 1; i >= 0 ; i--) {
             const rules: any = stylesheets[i].cssRules
             if (rules[1].selectorText.indexOf('step') !== -1) {
                 stepRule = stylesheets[i]

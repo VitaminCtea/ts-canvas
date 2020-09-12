@@ -575,3 +575,44 @@ const getValue = (arr: any, val: number, result: any = []) => {
 }
 
 console.log(getValue(arr, 5))
+
+const serial = (taskList: Function[], done: Function) => {
+    const invoke = () => {
+        let used: boolean = false
+        return (...rest: any[]) => {
+            if (used) return
+            used = true
+            const step = taskList.shift()
+            if (step) {
+                const err = rest.shift()
+                if (err) done(err)
+                rest.push(invoke())
+                step.apply(null, rest)
+                return
+            }
+            done.apply(null, rest)
+        }
+    }
+    const start = invoke()
+    start()
+}
+
+const step1 = (next: Function) => setTimeout(() => {
+    console.log(1)
+    next()
+}, 2000)
+
+const step2 = (next: Function) => setTimeout(() => {
+    console.log(2)
+    next()
+}, 3000)
+
+const step3 = (next: Function) => setTimeout(() => {
+    console.log(3)
+    next()
+}, 5000)
+
+serial([ step1, step2, step3 ], (err: any) => {
+    if (err) throw new Error('invoke fail')
+    console.log('complete')
+})
