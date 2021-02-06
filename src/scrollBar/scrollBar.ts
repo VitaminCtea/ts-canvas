@@ -27,7 +27,7 @@ export class ScrollBar {
     public observer: Observer = new Observer()
     
     private bar: Info
-    private transform: string = createProperty('transform')!
+    private transform: keyof CSSStyleDeclaration = createProperty('transform')!
     private directionPrefix: string = 'scrollBar-'
     private thumbMouseDown: Function | null = null
     private containerClick: Function | null = null

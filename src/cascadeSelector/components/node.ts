@@ -37,7 +37,7 @@ export class Node {
     public uid: number = 1
     public clickLIElement: HTMLElementInterface = null
 
-    private transition: string = createProperty('transition')!
+    private transition: keyof CSSStyleDeclaration = createProperty('transition')!
     private isMouseenterEvent: boolean = true
     private isSlide: boolean = false
     private nodeLabel: HTMLElementInterface = null
@@ -253,7 +253,7 @@ export class Node {
         this.setElementStyle(el, 'opacity', opacity)
     }
 
-    public setElementStyle(el: HTMLElement, attr: string, value: string) {
+    public setElementStyle(el: HTMLElement, attr: keyof CSSStyleDeclaration, value: string) {
         el.style[attr as any] = value
     }
 

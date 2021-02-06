@@ -28,7 +28,6 @@ export class CascadeSelectorPanel {
     private nodes: Node[] | null = []
     private path: string[] = []
     private isRegisterMouseEvent: boolean = false
-    private isRegisterTransitionEnd: boolean = false
     
     public constructor(
         el: HTMLElement, 

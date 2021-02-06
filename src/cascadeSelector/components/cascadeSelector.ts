@@ -71,7 +71,7 @@ export class CascadeSelector {
     private showPanel: ShowPanel = new ShowPanel(this)
     private hidePanel: HidePanel = new HidePanel(this)
     private state: ShowPanel | HidePanel = this.showPanel
-    private transition: string = createProperty('transition')!
+    private transition: keyof CSSStyleDeclaration = createProperty('transition')!
     private mouseIn: Function | null = null
     private mouseOut: Function | null = null
     private transitionEnd: Function | null = null
@@ -245,7 +245,7 @@ export class CascadeSelector {
         this.state.execute(this.cascadeSelectorPanel!.panelContainer!, content, CascadeSelector.CLICK_INPUT_CLASS_NAME)
     }
 
-    public setState(newState: any) {
+    public setState(newState: ShowPanel | HidePanel) {
         this.state = newState
     }
 }

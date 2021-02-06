@@ -145,35 +145,21 @@ event.off = (function (_this: typeof event) {
     }
 })(event)
 
-const upper = (attr: string) => attr.charAt(0).toUpperCase() + attr.substring(1)
+const upper = (attr: keyof CSSStyleDeclaration) => (attr as string).charAt(0).toUpperCase() + (attr as string).substring(1)
 
-export const getVendorPrefix = (element: HTMLElement) => {
-    const match = (Object.values(window.getComputedStyle(element, null)).join('').match(/-(moz|webkit|ms)-/) || ['', 'o'])[1]
-    const vendors = {
-        o: 'O', // - Opera
-        webkit: 'webkit',   // = Chrome and Safari
-        moz: 'Moz', // ? Firefox
-        ms: 'ms'    // # IE
-    }
-    
-    return vendors[match as keyof typeof vendors]
+export const getVendorPrefix = (element: HTMLElement): string => {
+    const ANIMATION: string = 'Animation'
+    const vendors: string[] = [ 'webkit', 'ms', 'O' ]
+    const style: CSSStyleDeclaration = element.style
+
+    if ([ `webkit${ ANIMATION }`, `Moz${ ANIMATION }` ].every(property => property in style)) return 'Moz'
+    return vendors.find(vendor => `${ vendor }${ ANIMATION }` in style) as string
 }
 
-const getStyleName = (element: HTMLElement, styleName: string) => {
-    const prefix = getVendorPrefix(element)
+const getStyleName = <T extends keyof CSSStyleDeclaration>(element: HTMLElement, styleName: T): T => 
+    styleName in element.style ? styleName : getVendorPrefix(element) + upper(styleName) as T
 
-    let prefixedStyleName
-
-    if (styleName in element.style) return styleName
-
-    prefixedStyleName = prefix + upper(styleName)
-
-    if (prefixedStyleName in element.style) return prefixedStyleName
-
-    return null
-}
-
-export const createProperty = (property: string) => getStyleName(document.body, property)
+export const createProperty = <T extends keyof CSSStyleDeclaration>(property: T): T => getStyleName(document.body, property)
 
 export const isDifferentElements = (e: MouseEvent) => e.target !== e.currentTarget
 
@@ -186,20 +172,20 @@ const getElementStyle = (el: HTMLElement) => window.getComputedStyle(el, null)
 
 const getPadding = (...rest: string[]) => rest.map(padding => removeCSSUnit(padding))
 
-const getTotalOffsetTop = (container: HTMLElement, selectTarget: HTMLElement) => {
+const getTotalOffsetTop = <T extends HTMLElement>(container: T, selectTarget: T) => {
     let totalOffsetParent: number = 0
-    let currentSelectOffsetParent: HTMLElement = selectTarget.offsetParent as HTMLElement
+    let currentSelectOffsetParent: T = selectTarget.offsetParent as T
 
     while (currentSelectOffsetParent && container !== currentSelectOffsetParent && container.contains(currentSelectOffsetParent)) {
         totalOffsetParent += currentSelectOffsetParent.offsetTop
-        currentSelectOffsetParent = currentSelectOffsetParent.offsetParent as HTMLElement
+        currentSelectOffsetParent = currentSelectOffsetParent.offsetParent as T
     }
 
     return totalOffsetParent
 }
 
 // & getBoundingClientRect()方法的兼容函数
-export const scrollToView = (container: HTMLElement, selectTarget: HTMLElement) => {
+export const scrollToView = <T extends HTMLElement>(container: T, selectTarget: T) => {
     if (!selectTarget || !isInViewport(container, selectTarget)) return
 
     /**
